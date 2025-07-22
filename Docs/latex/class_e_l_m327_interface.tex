@@ -1,0 +1,246 @@
+\doxysection{ELM327\+Interface Class Reference}
+\hypertarget{class_e_l_m327_interface}{}\label{class_e_l_m327_interface}\index{ELM327Interface@{ELM327Interface}}
+
+
+Implementation of \doxylink{class_e_l_m327_base}{ELM327\+Base} for real ELM327 OBD-\/\+II device communication.  
+
+
+Inheritance diagram for ELM327\+Interface\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_e_l_m327_interface}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_e_l_m327_interface_af235fb65c115388837a4a670dd4bc568}{ELM327\+Interface}} (const std\+::string \&port\+Name, unsigned int baud\+Rate)
+\begin{DoxyCompactList}\small\item\em Constructs an ELM327 interface for a specified serial port. \end{DoxyCompactList}\item 
+\Hypertarget{class_e_l_m327_interface_a6a4e206e37db695b5156910134008961}\label{class_e_l_m327_interface_a6a4e206e37db695b5156910134008961} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+ELM327\+Interface} ()
+\begin{DoxyCompactList}\small\item\em Destructor to ensure the serial port is closed. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_e_l_m327_interface_a5408e6ee517dcb9e06ce040ad138974c}{is\+Connected}} () const override
+\begin{DoxyCompactList}\small\item\em Checks if the ELM327 device is connected. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_e_l_m327_interface_a0c61fed61399607d61955c1173bd8c83}{read\+Until}} (char terminator)
+\begin{DoxyCompactList}\small\item\em Reads data from the serial port until a terminator character is received. \end{DoxyCompactList}\item 
+std\+::tuple$<$ int, int $>$ \mbox{\hyperlink{class_e_l_m327_interface_af582bf66ae4de542401135a8020b8b3e}{get\+RPMand\+Speed}} () override
+\begin{DoxyCompactList}\small\item\em Retrieves RPM and speed from the ELM327 device. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_e_l_m327_interface_ac5907bff24099f6c52ee00189f3d0553}{message}} (const std\+::string \&cmd)
+\begin{DoxyCompactList}\small\item\em Sends an OBD-\/\+II command to the ELM327 and processes the response. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_e_l_m327_interface_ac12fbcb0ca641ef374c0cc2d66035a49}{parse\+Hex\+Byte}} (const std\+::string \&str)
+\begin{DoxyCompactList}\small\item\em Parses a hexadecimal byte string to an integer. \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{class_e_l_m327_interface_a71ad538ebe71d8ffe87e6991cc98385b}{tokenize\+Response}} (const std\+::string \&response)
+\begin{DoxyCompactList}\small\item\em Tokenizes an ELM327 response into individual strings. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_e_l_m327_interface_a912c3434e430d00c272135a006998905}{parse\+RPM}} (const std\+::vector$<$ std\+::string $>$ \&bytes)
+\begin{DoxyCompactList}\small\item\em Parses RPM from tokenized ELM327 response. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_e_l_m327_interface_a8506e8f3d251c54be4fc85f8ab65a720}{parse\+Speed}} (const std\+::vector$<$ std\+::string $>$ \&bytes)
+\begin{DoxyCompactList}\small\item\em Parses speed from tokenized ELM327 response. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_e_l_m327_interface_a36d1ce888fa9ee5d3fd7f619eeb6aa8e}{clean\+Response}} (const std\+::string \&raw)
+\begin{DoxyCompactList}\small\item\em Cleans the raw ELM327 response by keeping only hexadecimal and space characters. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_e_l_m327_base}{ELM327\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+ELM327\+Base} ()=default
+\begin{DoxyCompactList}\small\item\em Virtual destructor to ensure proper cleanup in derived classes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementation of \doxylink{class_e_l_m327_base}{ELM327\+Base} for real ELM327 OBD-\/\+II device communication. 
+
+Communicates with an ELM327 device over a serial port to retrieve vehicle data such as RPM and speed using OBD-\/\+II commands. 
+
+\label{doc-constructors}
+\Hypertarget{class_e_l_m327_interface_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_e_l_m327_interface_af235fb65c115388837a4a670dd4bc568}\index{ELM327Interface@{ELM327Interface}!ELM327Interface@{ELM327Interface}}
+\index{ELM327Interface@{ELM327Interface}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{ELM327Interface()}{ELM327Interface()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_af235fb65c115388837a4a670dd4bc568} 
+ELM327\+Interface\+::\+ELM327\+Interface (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{port\+Name}{, }\item[{unsigned int}]{baud\+Rate}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs an ELM327 interface for a specified serial port. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em port\+Name} & The name of the serial port (e.\+g., "{}\+COM9"{}). \\
+\hline
+{\em baud\+Rate} & The baud rate for serial communication (e.\+g., 9600). \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em boost\+::system\+::system\+\_\+error} & if the port cannot be opened or configured. \\
+\hline
+\end{DoxyExceptions}
+
+
+\label{doc-func-members}
+\Hypertarget{class_e_l_m327_interface_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_e_l_m327_interface_a36d1ce888fa9ee5d3fd7f619eeb6aa8e}\index{ELM327Interface@{ELM327Interface}!cleanResponse@{cleanResponse}}
+\index{cleanResponse@{cleanResponse}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{cleanResponse()}{cleanResponse()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_a36d1ce888fa9ee5d3fd7f619eeb6aa8e} 
+std\+::string ELM327\+Interface\+::clean\+Response (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{raw}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Cleans the raw ELM327 response by keeping only hexadecimal and space characters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em raw} & The raw response string from the ELM327 device. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The cleaned response string. 
+\end{DoxyReturn}
+\Hypertarget{class_e_l_m327_interface_af582bf66ae4de542401135a8020b8b3e}\index{ELM327Interface@{ELM327Interface}!getRPMandSpeed@{getRPMandSpeed}}
+\index{getRPMandSpeed@{getRPMandSpeed}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{getRPMandSpeed()}{getRPMandSpeed()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_af582bf66ae4de542401135a8020b8b3e} 
+std\+::tuple$<$ int, int $>$ ELM327\+Interface\+::get\+RPMand\+Speed (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Retrieves RPM and speed from the ELM327 device. 
+
+\begin{DoxyReturn}{Returns}
+A tuple containing RPM (int) and speed (int) in MPH. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_e_l_m327_base_a0bf7cc45183e987e777d5f3a9a5f2211}{ELM327\+Base}}.
+
+\Hypertarget{class_e_l_m327_interface_a5408e6ee517dcb9e06ce040ad138974c}\index{ELM327Interface@{ELM327Interface}!isConnected@{isConnected}}
+\index{isConnected@{isConnected}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{isConnected()}{isConnected()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_a5408e6ee517dcb9e06ce040ad138974c} 
+bool ELM327\+Interface\+::is\+Connected (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Checks if the ELM327 device is connected. 
+
+\begin{DoxyReturn}{Returns}
+True if the serial port is open, false otherwise. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_e_l_m327_base_aca784237ffc3d06320a97641d7ad6539}{ELM327\+Base}}.
+
+\Hypertarget{class_e_l_m327_interface_ac5907bff24099f6c52ee00189f3d0553}\index{ELM327Interface@{ELM327Interface}!message@{message}}
+\index{message@{message}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{message()}{message()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_ac5907bff24099f6c52ee00189f3d0553} 
+int ELM327\+Interface\+::message (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{cmd}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sends an OBD-\/\+II command to the ELM327 and processes the response. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cmd} & The OBD-\/\+II command to send (e.\+g., "{}010\+C"{} for RPM). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The parsed value (RPM or speed) or -\/1 if parsing fails. 
+\end{DoxyReturn}
+\Hypertarget{class_e_l_m327_interface_ac12fbcb0ca641ef374c0cc2d66035a49}\index{ELM327Interface@{ELM327Interface}!parseHexByte@{parseHexByte}}
+\index{parseHexByte@{parseHexByte}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{parseHexByte()}{parseHexByte()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_ac12fbcb0ca641ef374c0cc2d66035a49} 
+int ELM327\+Interface\+::parse\+Hex\+Byte (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Parses a hexadecimal byte string to an integer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & The hexadecimal string to parse. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The integer value of the hexadecimal string. 
+\end{DoxyReturn}
+\Hypertarget{class_e_l_m327_interface_a912c3434e430d00c272135a006998905}\index{ELM327Interface@{ELM327Interface}!parseRPM@{parseRPM}}
+\index{parseRPM@{parseRPM}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{parseRPM()}{parseRPM()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_a912c3434e430d00c272135a006998905} 
+int ELM327\+Interface\+::parse\+RPM (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ std\+::string $>$ \&}]{bytes}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Parses RPM from tokenized ELM327 response. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bytes} & The tokenized response from the ELM327 device. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The calculated RPM value or -\/1 if parsing fails. 
+\end{DoxyReturn}
+\Hypertarget{class_e_l_m327_interface_a8506e8f3d251c54be4fc85f8ab65a720}\index{ELM327Interface@{ELM327Interface}!parseSpeed@{parseSpeed}}
+\index{parseSpeed@{parseSpeed}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{parseSpeed()}{parseSpeed()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_a8506e8f3d251c54be4fc85f8ab65a720} 
+int ELM327\+Interface\+::parse\+Speed (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ std\+::string $>$ \&}]{bytes}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Parses speed from tokenized ELM327 response. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bytes} & The tokenized response from the ELM327 device. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The calculated speed in MPH or -\/1 if parsing fails. 
+\end{DoxyReturn}
+\Hypertarget{class_e_l_m327_interface_a0c61fed61399607d61955c1173bd8c83}\index{ELM327Interface@{ELM327Interface}!readUntil@{readUntil}}
+\index{readUntil@{readUntil}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{readUntil()}{readUntil()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_a0c61fed61399607d61955c1173bd8c83} 
+std\+::string ELM327\+Interface\+::read\+Until (\begin{DoxyParamCaption}\item[{char}]{terminator}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Reads data from the serial port until a terminator character is received. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em terminator} & The character that indicates the end of the response. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The response string read from the serial port. 
+\end{DoxyReturn}
+\Hypertarget{class_e_l_m327_interface_a71ad538ebe71d8ffe87e6991cc98385b}\index{ELM327Interface@{ELM327Interface}!tokenizeResponse@{tokenizeResponse}}
+\index{tokenizeResponse@{tokenizeResponse}!ELM327Interface@{ELM327Interface}}
+\doxysubsubsection{\texorpdfstring{tokenizeResponse()}{tokenizeResponse()}}
+{\footnotesize\ttfamily \label{class_e_l_m327_interface_a71ad538ebe71d8ffe87e6991cc98385b} 
+std\+::vector$<$ std\+::string $>$ ELM327\+Interface\+::tokenize\+Response (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{response}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Tokenizes an ELM327 response into individual strings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response} & The cleaned response string. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A vector of tokenized strings. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{main_8cpp}{main.\+cpp}}\end{DoxyCompactItemize}

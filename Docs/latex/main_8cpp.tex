@@ -1,0 +1,137 @@
+\doxysection{main.\+cpp File Reference}
+\hypertarget{main_8cpp}{}\label{main_8cpp}\index{main.cpp@{main.cpp}}
+
+
+Implementation of an OBD-\/\+II ELM327 interface for calculating rev-\/matching RPMs based on vehicle speed and gear ratios.  
+
+
+{\ttfamily \#include $<$boost/asio.\+hpp$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$thread$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$iomanip$>$}\newline
+{\ttfamily \#include $<$tuple$>$}\newline
+{\ttfamily \#include $<$csignal$>$}\newline
+{\ttfamily \#include $<$atomic$>$}\newline
+{\ttfamily \#include $<$random$>$}\newline
+{\ttfamily \#include $<$chrono$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_e_l_m327_base}{ELM327\+Base}}
+\begin{DoxyCompactList}\small\item\em Abstract base class for ELM327 interfaces. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_gear_box}{Gear\+Box}}
+\begin{DoxyCompactList}\small\item\em Manages gear ratios and calculates rev-\/matching RPMs for downshifts. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_e_l_m327_interface}{ELM327\+Interface}}
+\begin{DoxyCompactList}\small\item\em Implementation of \doxylink{class_e_l_m327_base}{ELM327\+Base} for real ELM327 OBD-\/\+II device communication. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_dummy_e_l_m327}{Dummy\+ELM327}}
+\begin{DoxyCompactList}\small\item\em A mock ELM327 implementation for testing purposes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{main_8cpp_a8ee3282bc313e547dbbb8d4f4010db61}{signal\+Handler}} (int signum)
+\begin{DoxyCompactList}\small\item\em Signal handler for SIGINT to gracefully terminate the program. \end{DoxyCompactList}\item 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_e_l_m327_base}{ELM327\+Base}} $>$ \mbox{\hyperlink{main_8cpp_a6e633ecc5da2dea5df06b2b05757a587}{create\+ELM327\+Interface}} (bool \mbox{\hyperlink{main_8cpp_a4ca1649b0fc050ca483e5dd8996ac80d}{test\+Mode}}, const std\+::string \&port="{}COM9"{}, int baud\+Rate=9600)
+\begin{DoxyCompactList}\small\item\em Creates an ELM327 interface based on the operation mode. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{main_8cpp_a0ddf1224851353fc92bfbff6f499fa97}{main}} (int argc, char \texorpdfstring{$\ast$}{*}argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Main function to run the rev-\/matching application. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8cpp_ae0d3953b307a52769976e1ee2638b189}\label{main_8cpp_ae0d3953b307a52769976e1ee2638b189} 
+constexpr double {\bfseries TIRE\+\_\+\+CONVERSION} = 1056.\+0
+\begin{DoxyCompactList}\small\item\em Conversion factor for tire calculations (revolutions per mile). \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a23543c3624deca760549225b10367719}\label{main_8cpp_a23543c3624deca760549225b10367719} 
+constexpr double {\bfseries KMH\+\_\+\+TO\+\_\+\+MPH} = 0.\+621371
+\begin{DoxyCompactList}\small\item\em Conversion factor from km/h to mph. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a7988cc4b166fcf351ca38bddc634e6e2}\label{main_8cpp_a7988cc4b166fcf351ca38bddc634e6e2} 
+constexpr const char \texorpdfstring{$\ast$}{*} {\bfseries RPM\+\_\+\+CMD} = "{}010\+C"{}
+\begin{DoxyCompactList}\small\item\em OBD-\/\+II command for retrieving RPM. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a45d2c003d28ebc7326f3ef8119e5dbc1}\label{main_8cpp_a45d2c003d28ebc7326f3ef8119e5dbc1} 
+constexpr const char \texorpdfstring{$\ast$}{*} {\bfseries SPEED\+\_\+\+CMD} = "{}010\+D"{}
+\begin{DoxyCompactList}\small\item\em OBD-\/\+II command for retrieving vehicle speed. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a398527b3e9e358c345c5047b16871957}\label{main_8cpp_a398527b3e9e358c345c5047b16871957} 
+bool {\bfseries debug} = false
+\begin{DoxyCompactList}\small\item\em Flag to enable debug output. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a4ca1649b0fc050ca483e5dd8996ac80d}\label{main_8cpp_a4ca1649b0fc050ca483e5dd8996ac80d} 
+bool {\bfseries test\+Mode} = false
+\begin{DoxyCompactList}\small\item\em Flag to enable test mode with dummy data. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_af53701aded99286de42137bffab9561a}\label{main_8cpp_af53701aded99286de42137bffab9561a} 
+std\+::atomic$<$ bool $>$ {\bfseries running} \{true\}
+\begin{DoxyCompactList}\small\item\em Atomic flag to control program execution during signal handling. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementation of an OBD-\/\+II ELM327 interface for calculating rev-\/matching RPMs based on vehicle speed and gear ratios. 
+
+\begin{DoxyAuthor}{Author}
+William Dixon 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025-\/07-\/22
+\end{DoxyDate}
+This program interfaces with an ELM327 OBD-\/\+II device (or a dummy simulator) to retrieve vehicle RPM and speed data, processes it through a gearbox model to calculate rev-\/matching RPMs for downshifts, and logs the results to a CSV file. It supports both real hardware and test modes with configurable parameters. 
+
+\label{doc-func-members}
+\Hypertarget{main_8cpp_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{main_8cpp_a6e633ecc5da2dea5df06b2b05757a587}\index{main.cpp@{main.cpp}!createELM327Interface@{createELM327Interface}}
+\index{createELM327Interface@{createELM327Interface}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{createELM327Interface()}{createELM327Interface()}}
+{\footnotesize\ttfamily \label{main_8cpp_a6e633ecc5da2dea5df06b2b05757a587} 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_e_l_m327_base}{ELM327\+Base}} $>$ create\+ELM327\+Interface (\begin{DoxyParamCaption}\item[{bool}]{test\+Mode}{, }\item[{const std\+::string \&}]{port}{ = {\ttfamily "{}COM9"{}}, }\item[{int}]{baud\+Rate}{ = {\ttfamily 9600}}\end{DoxyParamCaption})}
+
+
+
+Creates an ELM327 interface based on the operation mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em test\+Mode} & If true, creates a \doxylink{class_dummy_e_l_m327}{Dummy\+ELM327}; otherwise, creates an \doxylink{class_e_l_m327_interface}{ELM327\+Interface}. \\
+\hline
+{\em port} & The serial port name for real ELM327 (default\+: "{}\+COM9"{}). \\
+\hline
+{\em baud\+Rate} & The baud rate for real ELM327 (default\+: 9600). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A unique\+\_\+ptr to an \doxylink{class_e_l_m327_base}{ELM327\+Base} object. 
+\end{DoxyReturn}
+\Hypertarget{main_8cpp_a0ddf1224851353fc92bfbff6f499fa97}\index{main.cpp@{main.cpp}!main@{main}}
+\index{main@{main}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{main_8cpp_a0ddf1224851353fc92bfbff6f499fa97} 
+int main (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{argv}{\mbox{[}$\,$\mbox{]}}\end{DoxyParamCaption})}
+
+
+
+Main function to run the rev-\/matching application. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & Number of command-\/line arguments. \\
+\hline
+{\em argv} & Array of command-\/line arguments. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Exit status (0 for success, 1 for error).
+\end{DoxyReturn}
+Processes command-\/line arguments, initializes the gearbox and ELM327 interface, and continuously logs RPM, speed, gear, and rev-\/matching data to a CSV file. \Hypertarget{main_8cpp_a8ee3282bc313e547dbbb8d4f4010db61}\index{main.cpp@{main.cpp}!signalHandler@{signalHandler}}
+\index{signalHandler@{signalHandler}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{signalHandler()}{signalHandler()}}
+{\footnotesize\ttfamily \label{main_8cpp_a8ee3282bc313e547dbbb8d4f4010db61} 
+void signal\+Handler (\begin{DoxyParamCaption}\item[{int}]{signum}{}\end{DoxyParamCaption})}
+
+
+
+Signal handler for SIGINT to gracefully terminate the program. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em signum} & The signal number (e.\+g., SIGINT). \\
+\hline
+\end{DoxyParams}
