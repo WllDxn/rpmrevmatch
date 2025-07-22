@@ -1,0 +1,3 @@
+C:/Users/Will/Documents/rpmrevmatch/out/build/rpmrevmatch/CMakeFiles/RPMRevMatch.dir
+C:/Users/Will/Documents/rpmrevmatch/out/build/rpmrevmatch/CMakeFiles/ALL_BUILD.dir
+C:/Users/Will/Documents/rpmrevmatch/out/build/rpmrevmatch/CMakeFiles/ZERO_CHECK.dir
