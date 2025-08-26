@@ -1,9 +1,9 @@
-15,61
-11,37
-22,41
-28,37
-34,35
-39,32
-500
-6000
-74.38402
+final_drive = 15,61
+gear_ratio  = 11,37
+gear_ratio  = 22,41
+gear_ratio  = 28,37
+gear_ratio  = 34,35
+gear_ratio  = 39,32
+min_rpm = 500
+max_rpm = 6000
+wheel_circumference = 74.38402

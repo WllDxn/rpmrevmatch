@@ -1,16 +1,29 @@
 cmake_minimum_required(VERSION 3.10)
 project(RPMRevMatch)
+add_compile_definitions(_WIN32_WINNT=0x0601)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/local/boost_1_88_0")
-SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/local/boost_1_88_0lib")
+# Tell CMake where to find Boost
+set(BOOST_ROOT "C:/local/boost_1_88_0")
 
-find_package(Boost REQUIRED COMPONENTS system)
+# Find Boost headers only (you only need headers for Asio unless you're using Boost::System)
+find_package(Boost REQUIRED)
 
-# Add executable
-add_executable(RPMRevMatch main.cpp)
+# Add subdirectories for internal libraries
+add_subdirectory(utils)
+add_subdirectory(config)
+add_subdirectory(io)
 
+# Add your executable
+add_executable(RPMRevMatch src/main.cpp)
+target_sources(RPMRevMatch PRIVATE
+    utils/signal_handler.cpp
+)
+
+# Link libraries
+target_link_libraries(RPMRevMatch PRIVATE utils io config ${Boost_LIBRARIES})
+
+# Add Boost headers
 target_include_directories(RPMRevMatch PRIVATE ${Boost_INCLUDE_DIRS})
-target_link_libraries(RPMRevMatch PRIVATE ${Boost_LIBRARIES})
+target_include_directories(RPMRevMatch PRIVATE "C:/local/boost_1_88_0")

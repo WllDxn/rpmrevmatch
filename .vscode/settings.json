@@ -110,5 +110,6 @@
         "typeindex": "cpp",
         "unordered_set": "cpp",
         "variant": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }
