@@ -25,7 +25,7 @@
 #include "../io/csv_writer.hpp"
 #include "../io/elm327.hpp"
 #include <SDKDDKVer.h>
-
+#include <thread>  
 using boost::asio::serial_port_base;
 namespace asio = boost::asio;
 
@@ -46,29 +46,47 @@ public:
         std::cout << "RPM Range: " << minRPM << "-" << maxRPM << "\n";
         std::cout << "Wheel Circumference: " << wheelCircumference << " inches\n";
     }
-
-    std::tuple<int, int> revMatcher(int MPH, int rpm)
+    
+    std::tuple<int, int> revMatcher(int MPH, int rpm, int64_t now)
     {
-        int currentGear = getCurrentGear(rpm, MPH);
+        auto [dR, dM] = getDerivatives(rpm, MPH, now);
+        bool diverging = (dR * dM <= 0);
+        bool rpmDecrease = (dR < 0);
+        
+        int currentGear = !(diverging || rpmDecrease) ? getCurrentGear(rpm, MPH) : previousGear;
+        previousGear = currentGear;
+        
         if (currentGear < 2)
         {
             return {currentGear, -1};
         }
         else
         {
-            int targetRPM = static_cast<int>((TIRE_CONVERSION * MPH * finalDrive * gearRatios[currentGear - 1]) / wheelCircumference);
-            if (targetRPM < minRPM || targetRPM > maxRPM)
-            {
-                return {currentGear, -1};
-            }
-            else
-            {
+            // for (auto g : gearRatios)
+            // {
+                //     std::cout << static_cast<int>((TIRE_CONVERSION * MPH * finalDrive * g) / wheelCircumference) << "  ";
+                // }
+                int cRPM = static_cast<int>((TIRE_CONVERSION * MPH * finalDrive * gearRatios[currentGear - 1]) / wheelCircumference);
+                if (!(diverging || rpmDecrease)){
+
+                    myfile.open("logs/temp.txt", std::ofstream::app);
+                    myfile << currentGear << "  " << ((static_cast<double>(rpm-cRPM)/rpm))*100<< '\n';
+                    myfile.close();
+                }
+                int targetRPM = static_cast<int>((TIRE_CONVERSION * MPH * finalDrive * gearRatios[currentGear - 2]) / wheelCircumference);
+                if (targetRPM < minRPM || targetRPM > maxRPM)
+                {
+                    return {currentGear, -1};
+                }
+                else
+                {
                 return {currentGear, targetRPM};
             }
         }
     }
 
 private:
+    std::ofstream myfile;
     std::vector<double> gearRatios;
     double finalDrive;
     double wheelCircumference;
@@ -76,7 +94,20 @@ private:
     int maxRPM;
     double TIRE_CONVERSION = 1056.0;
     double KMH_TO_MPH = 0.621371;
-    
+    int previousGear = 1;
+    struct DataPoint {
+        int64_t timestamp;
+        int rpm;
+        int mph;
+        
+        DataPoint(int64_t t, int r, int m) : timestamp(t), rpm(r), mph(m) {}
+    };
+    static constexpr size_t MAX_POINTS = 100; // Adjust based on your needs
+    std::vector<DataPoint> buffer;
+    size_t start = 0;
+    size_t count = 0;
+    static constexpr int threshold = 250;
+
     int getCurrentGear(int rpm, int mph)
     {
         
@@ -93,13 +124,59 @@ private:
 
         int left = 0;
         while (left<gearRatios.size()-1) {
-            double midpoint = (gearRatios[left] + gearRatios[left + 1]) / 2.0;
-            if (currentRatioValue > midpoint) {
+            if (currentRatioValue > gearRatios[left]) {
                 return left+1;
             }
             left++;
         }
         return left+1;
+    }
+    std::pair<double, double> getDerivatives(int rpm, int mph, int64_t now) {
+        updatePrevious(now, rpm, mph);
+        
+        if (count < 2) {
+            return {0.0, 0.0};
+        }
+        
+        double rpmSum = 0.0;
+        double mphSum = 0.0;
+        
+        for (size_t i = 1; i < count; ++i) {
+            const auto& p1 = buffer[(start + i - 1) % MAX_POINTS];
+            const auto& p2 = buffer[(start + i) % MAX_POINTS];
+            
+            int64_t dt = p2.timestamp - p1.timestamp;
+            if (dt > 0) {
+                rpmSum += static_cast<double>(p2.rpm - p1.rpm) / dt;
+                mphSum += static_cast<double>(p2.mph - p1.mph) / dt;
+            }
+        }
+        
+        return {rpmSum / (count - 1), mphSum / (count - 1)};
+    }
+
+    void updatePrevious(int64_t now, int rpm, int mph) {
+        while (count > 0) {
+            const auto& oldest = buffer[start];
+            if (oldest.timestamp > now - threshold) {
+                break;
+            }
+            start = (start + 1) % MAX_POINTS;
+            --count;
+        }
+        
+        if (count < MAX_POINTS) {
+            size_t pos = (start + count) % MAX_POINTS;
+            if (pos >= buffer.size()) {
+                buffer.emplace_back(now, rpm, mph);
+            } else {
+                buffer[pos] = DataPoint(now, rpm, mph);
+            }
+            ++count;
+        } else {
+            buffer[start] = DataPoint(now, rpm, mph);
+            start = (start + 1) % MAX_POINTS;
+        }
     }
 };
 
@@ -161,7 +238,8 @@ int main(int argc, char *argv[])
 
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         int sampleCount = 0;
-
+        auto now = std::chrono::system_clock::now();
+        auto oldtimestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
         while (handler.isRunning()) {
             auto result = elm->getEngineData(handler, "01 0C 0D 04 11 05 4\r");
             if (!result) {
@@ -171,13 +249,14 @@ int main(int argc, char *argv[])
                 continue;
             }
 
-            auto [rpm, speed, load, throttle] = result.value();
-
+            auto [rpm, speed, load, throttle, timestamp] = result.value();
+            if (finalConfig.app.test_mode){
+                std::this_thread::sleep_for(std::chrono::milliseconds(timestamp - oldtimestamp)); 
+                oldtimestamp = timestamp;
+            }
             if (rpm > 0 && speed >= 0) {
-                auto [gear, revs] = gearBox.revMatcher(speed, rpm);
-                auto now = std::chrono::system_clock::now();
-                auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 
+                auto [gear, revs] = gearBox.revMatcher(speed, rpm, timestamp);
                 csvWriter->writeRow(rpm, speed, gear, revs, load, throttle, timestamp);
                 sampleCount++;
             }

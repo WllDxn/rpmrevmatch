@@ -19,13 +19,15 @@
 #include <algorithm>
 #include <charconv>
 #include <format>
+#include <chrono>
+#include <ctime>
 
 class ELM327Base
 {
 public:
     virtual ~ELM327Base() = default;
 
-    virtual Result<std::tuple<int, int, int, int>> getEngineData(const SignalHandler& handler, std::string_view cmd) = 0;
+    virtual Result<std::tuple<int, int, int, int, long long>> getEngineData(const SignalHandler& handler, std::string_view cmd) = 0;
 
     virtual bool isConnected() const = 0;
 };
@@ -40,7 +42,7 @@ public:
     ELM327Interface(const std::string& portName, unsigned int baudRate);
     ~ELM327Interface();
     bool isConnected() const override;
-    Result<std::tuple<int, int, int, int>> getEngineData(const SignalHandler& handler, std::string_view cmd) override;
+    Result<std::tuple<int, int, int, int, long long>> getEngineData(const SignalHandler& handler, std::string_view cmd) override;
 
     std::string messageReadOBD(const std::string_view cmd,
                                const bool printResponse = false,
@@ -54,14 +56,14 @@ private:
     std::mt19937 gen;
     std::uniform_int_distribution<> rpmDist;
     std::uniform_int_distribution<> speedDist;
-    std::vector<std::pair<int, int>> testData;
+    std::vector<std::tuple<int, int, long long>> testData;
     size_t dataIndex;
     bool useTestData;
 
 public:
     explicit DummyELM327(bool useTestData = true);
     bool isConnected() const override;
-    Result<std::tuple<int, int, int, int>> getEngineData(const SignalHandler& handler,std::string_view cmd) override;
+    Result<std::tuple<int, int, int, int, long long>> getEngineData(const SignalHandler& handler,std::string_view cmd) override;
 
 private:
     void loadTestData();

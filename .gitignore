@@ -5,7 +5,4 @@ out2
 .vs
 .vscode
 scripts
-temp
-**/.vscode/
-**/.vscode/*
-/.vscode/launch.json
+logs
